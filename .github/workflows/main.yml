@@ -1,0 +1,29 @@
+name: Build LaTeX Document
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          # 指定使用 xelatex 编译器，这是支持中文的关键
+          compiler: xelatex
+          # 自动安装缺失的包（虽然 full 镜像通常都有）
+          args: -interaction=nonstopmode -file-line-error -pdf
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF_Output
+          path: main.pdf
